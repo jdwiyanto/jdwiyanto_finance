@@ -85,7 +85,7 @@ server <- function(input, output, session) {
     
     req(input$file1)
     df = read.csv(input$file1$datapath, header=T) %>% 
-         mutate(date = lubridate::dmy(date)) 
+         mutate(date = as.Date(date, format = '%d/%m/%y'))
     
   })
   
