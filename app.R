@@ -38,7 +38,8 @@ ui <- dashboardPage(
                                        cellArgs = list(style = "padding: 6px"),
                                        cellWidths = c('50%', '50%'),
                                        plotOutput("plot_out_cat"),
-                                       plotOutput("plot_out_top5")))
+                                       plotOutput("plot_out_top5"))),
+                         fluidRow(plotOutput("plot_out_monthly_sum"))
                          ),
                 tabPanel("Data", tableOutput("table_out_df"))
                 )
@@ -53,10 +54,9 @@ server <- function(input, output, session) {
   # set default data if no input file given
   default_data = 
     data.frame(date =  c(
-      "1/8/2023", "1/8/2023", "1/8/2023", "2/8/2023", "2/8/2023", "2/8/2023", "2/8/2023", "2/8/2023", "3/8/2023","3/8/2023", "3/8/2023", "3/8/2023", "4/8/2023", "4/8/2023", "4/8/2023", "5/8/2023", "5/8/2023", "5/8/2023","5/8/2023", "5/8/2023", "6/8/2023", "6/8/2023", "6/8/2023", "6/8/2023", "6/8/2023", "6/8/2023", "6/8/2023",
-      "6/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "8/8/2023", "9/8/2023","9/8/2023", "9/8/2023", "9/8/2023", "9/8/2023", "10/8/2023", "10/8/2023", "10/8/2023", "10/8/2023","11/8/2023", "11/8/2023", "11/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023","12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "13/8/2023","13/8/2023", "14/8/2023", "14/8/2023", "14/8/2023", "14/8/2023", "15/8/2023", "15/8/2023", "15/8/2023","15/8/2023", "16/8/2023", "16/8/2023", "16/8/2023", "17/8/2023", "18/8/2023", "18/8/2023", "18/8/2023","18/8/2023", "18/8/2023", "20/8/2023", "20/8/2023", "20/8/2023", "20/8/2023", "21/8/2023", "21/8/2023","22/8/2023", "22/8/2023", "23/8/2023", "23/8/2023", "23/8/2023", "23/8/2023", "24/8/2023", "25/8/2023","25/8/2023", "25/8/2023", "25/8/2023", "25/8/2023", "27/8/2023", "28/8/2023", "28/8/2023", "28/8/2023"),category = c("outside meal", "dessert", "outside meal", "morning coffee", "outside meal", "outside meal", "outside meal","grocery", "morning coffee", "outside meal", "dessert", "outside meal", "morning coffee", "outside meal", "outside meal","outside meal", "transport", "household", "transport", "outside meal", "dessert","transport", "household", "outside meal","grocery", "transport", "household","household", "morning coffee", "outside meal", "dessert", "transport", "transport","transport", "grocery", "transport", "household", "outside meal", "transport","dessert", "outside meal", "household", "dessert", "transport", "transport","shopping_entertainment", "outside meal","transport", "shopping_entertainment","transport", "shopping_entertainment", "household", "dessert", "outside meal","morning coffee", "outside meal", "dessert", "transport", "morning coffee", "outside meal", "household", "household","morning coffee", "outside meal", "dessert","grocery", "morning coffee", "outside meal", "dessert", "transport", "morning coffee","outside meal", "household", "household", "morning coffee", "outside meal", "dessert","outside meal", "grocery","transport", "outside meal", "outside meal", "grocery", "transport", "outside meal", "dessert", "grocery", "transport","outside meal", "outside meal","dessert", "grocery", "outside meal", "dessert", "grocery", "transport", "outside meal","dessert","grocery", "outside meal"),item = c("lunch", "ice cream", "dinner", "coffee", "lunch", "lunch", "dinner", "grocery", "coffee", "lunch", "coffee","dinner", "coffee", "lunch", "dinner", "brunch", "grab", "kitchenware", "gocar", "dinner", "tea", "gocar","furnitures","dinner", "grocery", "gocar", "glasswares", "cookware", "coffee", "lunch", "dimsum", "gocar", "gocar", "gocar","grocery", "gocar", "electronics", "coffee", "lunch", "coffee", "ice cream", "coffee", "tea", "gocar", "coffee","lunch", "washware", "lighting", "coffee", "lunch", "chips", "grocery", "coffee", "coffee","lunch", "french fries","dinner", "gocar", "grocery", "cleaning", "ice cream", "grocery", "lunch", "coffee", "tea", "grocery", "lunch", "dimsum","ice cream", "dinner", "coffee", "lunch", "tea", "lunch", "dinner", "grocery", "gocar", "lunch", "lunch", "grocery","lunch", "grocery", "lunch", "transport",  "lunch", "ice cream", "dinner", "coffee", "lunch", "lunch", "dinner", "grocery", "coffee", "lunch", "coffee", "lunch", "ice cream", "dinner", "coffee", "lunch"),price = c(37, 14, 21, 10, 14, 30, 18, 263, 10, 14, 20, 13, 10, 31, 40, 12, 124, 442, 26, 20, 14.3, 67, 536, 42, 325, 34, 513,421, 10, 24, 23, 132, 68, 38, 395, 39, 26, 72, 528, 8, 8, 20, 17, 445, 21, 120, 5, 59, 455, 473, 45, 59, 151, 77,391, 460, 33, 30, 372, 143, 511, 34, 13, 40, 22, 8, 29, 420, 425, 8, 20, 5, 302, 24, 17, 22, 42, 30, 174, 402, 25.3,106, 26, 5, 5, 355, 44, 5, 7, 41, 5, 33, 47, 50, 31, 396, 13, 40, 22, 12)) %>% 
-    mutate(date2 = date,
-           date = lubridate::dmy(date),
+      "1/1/2023", "1/1/2023", "1/1/2023", "2/2/2023", "2/2/2023", "2/2/2023", "2/3/2023", "2/3/2023", "3/3/2023","3/4/2023", "3/4/2023", "3/4/2023", "4/5/2023", "4/5/2023", "4/5/2023", "5/5/2023", "5/6/2023", "5/6/2023","5/6/2023", "5/6/2023", "6/6/2023", "6/7/2023", "6/7/2023", "6/7/2023", "6/7/2023", "6/8/2023", "6/8/2023",
+      "6/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "7/8/2023", "8/8/2023", "9/8/2023","9/8/2023", "9/8/2023", "9/8/2023", "9/8/2023", "10/8/2023", "10/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "12/8/2023", "15/8/2023", "15/8/2023","15/8/2023", "16/8/2023", "16/8/2023", "16/8/2023", "17/8/2023", "18/8/2023", "18/8/2023", "18/8/2023","18/8/2023", "18/8/2023", "20/8/2023", "20/8/2023", "20/8/2023", "20/8/2023", "21/8/2023", "21/8/2023","22/8/2023", "22/8/2023", "23/8/2023", "23/8/2023", "23/8/2023", "23/8/2023", "24/9/2023", "25/9/2023","25/9/2023", "25/10/2023", "25/10/2023", "25/11/2023", "27/11/2023", "28/12/2023", "28/12/2023", "28/12/2023"),category = c("dessert", "outside meal", "morning coffee", "outside meal", "outside meal","outside meal", "transport", "household", "transport", "outside meal", "dessert","transport", "household", "grocery", "transport", "household","household", "morning coffee", "outside meal", "dessert", "transport", "transport","transport", "grocery", "transport", "household", "outside meal", "transport","dessert", "outside meal", "household", "shopping_entertainment", "household", "dessert", "outside meal","morning coffee", "outside meal", "dessert", "transport", "morning coffee", "outside meal", "household", "household","morning coffee", "outside meal", "dessert","grocery", "morning coffee", "outside meal", "dessert", "transport", "morning coffee","outside meal", "household", "household", "morning coffee", "outside meal", "dessert","outside meal", "grocery","transport", "outside meal", "outside meal", "grocery", "transport", "outside meal", "dessert", "grocery", "transport","outside meal", "outside meal","dessert", "grocery", "outside meal", "dessert", "grocery", "transport", "outside meal","dessert","grocery", "outside meal"),item = c("dinner", "coffee", "lunch", "dinner", "brunch", "grab", "kitchenware", "gocar", "dinner", "tea", "gocar","furnitures","dinner", "grocery", "gocar", "glasswares", "cookware", "coffee", "lunch", "dimsum", "gocar", "gocar", "gocar","grocery", "gocar", "electronics", "coffee", "lunch", "coffee", "ice cream", "coffee", "tea", "gocar", "coffee","lunch", "washware", "lighting", "coffee", "gocar", "grocery", "cleaning", "ice cream", "grocery", "lunch", "coffee", "tea", "grocery", "lunch", "dimsum","ice cream", "dinner", "coffee", "lunch", "tea", "lunch", "dinner", "grocery", "gocar", "lunch", "lunch", "grocery","lunch", "grocery", "lunch", "transport",  "lunch", "ice cream", "dinner", "coffee", "lunch", "lunch", "dinner", "grocery", "coffee", "lunch", "coffee", "lunch", "ice cream", "dinner", "coffee", "lunch"),price = c(13, 10, 31, 40, 12, 124, 442, 26, 20, 14.3, 67, 536, 42, 325, 34, 513,421, 10, 24, 23, 132, 68, 38, 395, 39, 26, 72, 528, 8, 8, 20, 17, 445, 21, 120, 5, 59, 455, 473, 45, 59, 151, 34, 13, 40, 22, 8, 29, 420, 425, 8, 20, 5, 302, 24, 17, 22, 42, 30, 174, 402, 25.3,106, 26, 5, 5, 355, 44, 5, 7, 41, 5, 33, 47, 50, 31, 396, 13, 40, 22, 12)) %>% 
+    mutate(date = lubridate::dmy(date),
            price = price*0.5) 
   
   # dynamic UI for dateRangeInput
@@ -107,7 +107,8 @@ server <- function(input, output, session) {
   output$table_out_df = renderTable({
     
     current_data() %>%
-      filter(category %in% input$var_input_category)
+      filter(category %in% input$var_input_category) %>%
+      mutate(date = as.character(date))
     
     })
   
@@ -153,6 +154,7 @@ server <- function(input, output, session) {
   output$plot_out_cumsum = renderPlot({
     
     df_filtered() %>%
+      # default_data %>%
       group_by(date) %>%
       summarise(sum_daily = sum(price)) %>%
       mutate(cum_sum = cumsum(sum_daily),
@@ -160,7 +162,7 @@ server <- function(input, output, session) {
       ggplot(aes_string(x='date', y='cum_sum')) +
       geom_line(aes(color = col_color), size=2, color = 'grey') + theme_bw() +
       geom_point(size = 3, aes(color = col_color)) +
-      scale_x_date(breaks = 'day', date_labels = '%d-%b') +
+      scale_x_date(breaks = 'day', date_labels = '%d-%b', date_breaks = "2 week") +
       scale_color_manual(values = c("Below Limit" = '#0c343d', 
                                     "Passed Limit" = '#85200c')) +
       labs(x='', y='Rp (`000)',
@@ -214,6 +216,37 @@ server <- function(input, output, session) {
             axis.text.y = element_text(size=12),
             axis.text.x = element_text(size=12),
             axis.title.x = element_text(size=12))
+  })
+  
+  # plot monthly summary
+  output$plot_out_monthly_sum = renderPlot({
+      current_data() %>% 
+      # default_data %>%
+      mutate(month = month(date),
+             year = year(date),
+             month = ifelse(nchar(month) == 1, paste0('0', month), month),
+             Group  = paste(year, month, sep='-'))%>%
+      group_by(Group) %>%
+      reframe(Total = sum(price),
+              DailyAverage = mean(price),
+              DailyMedian = median(price)) %>%
+      pivot_longer(!Group) %>%
+      mutate(year = substr(Group,1,4),
+             month = substr(Group, 6,7)) %>% 
+      ggplot(aes(x=month, y=round(value,2), group = name, color=name)) +
+      geom_point() +
+      geom_line() +
+      geom_text(aes(label = round(value,2)), vjust = -0.5) +
+      scale_color_manual(values = c('steelblue', 'turquoise', 'orange')) +
+      facet_grid(year~name, scales='free_y') +
+      theme_bw() +
+      labs(x = '', y = "Rp ('000)",
+           title = 'Monthly Spending Summary') +
+      theme(legend.position = 'none',
+            axis.text.x = element_text(size = 12),
+            plot.title = element_text(size=15, face='bold'),
+            strip.text = element_text(size = 13),
+            axis.title.y = element_text(size=13))
   })
   
 }

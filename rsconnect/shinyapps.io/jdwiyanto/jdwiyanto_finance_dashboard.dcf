@@ -1,0 +1,13 @@
+name: jdwiyanto_finance_dashboard
+title: jdwiyanto_finance_dashboard
+username: jdwiyanto
+account: jdwiyanto
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9753697
+bundleId: 7666084
+url: https://jdwiyanto.shinyapps.io/jdwiyanto_finance_dashboard/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: sample_input.csv|www/rstudio.png
